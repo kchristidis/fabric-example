@@ -1,0 +1,24 @@
+OrdererOrgs:
+
+  - Name: Orderer
+    Domain: example.com
+    Specs:
+      - Hostname: joe
+
+PeerOrgs:
+
+  - Name: Clark
+    Domain: clark.example.com
+    Template:
+      Count: 1
+      Hostname: p{{.Index}}
+    Users:
+      Count: 1
+
+  - Name: Amelia
+    Domain: amelia.example.com
+    Template:
+      Count: 1
+      Hostname: p{{.Index}}
+    Users:
+      Count: 1

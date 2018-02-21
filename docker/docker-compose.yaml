@@ -1,0 +1,107 @@
+version: '2'
+
+networks:
+  example:
+
+services:
+
+  joe.example.com:
+    container_name: joe.example.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=JoeMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+      - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp:/var/hyperledger/orderer/msp
+      - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/tls/:/var/hyperledger/orderer/tls
+      - ../config/genesis.block:/var/hyperledger/orderer/genesis.block
+    ports:
+      - 7050:7050
+    networks:
+      - example
+
+  p0.clark.example.com:
+    container_name: p0.clark.example.com
+    extends:
+      file: peer.yaml
+      service: peer
+    environment:
+      - CORE_PEER_ADDRESS=p0.clark.example.com:7051
+      - CORE_PEER_LOCALMSPID=ClarkMSP
+      - CORE_PEER_ID=Clark
+    depends_on:
+      - joe.example.com
+    volumes:
+      - ../crypto/peerOrganizations/clark.example.com/peers/p0.clark.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto/peerOrganizations/clark.example.com/peers/p0.clark.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 8051:7051
+      - 8053:7053
+    networks:
+      - example
+
+  p0.amelia.example.com:
+    container_name: p0.amelia.example.com
+    extends:
+      file: peer.yaml
+      service: peer
+    environment:
+      - CORE_PEER_ADDRESS=p0.amelia.example.com:7051
+      - CORE_PEER_LOCALMSPID=AmeliaMSP
+      - CORE_PEER_ID=Amelia
+    depends_on:
+      - joe.example.com
+    volumes:
+      - ../crypto/peerOrganizations/amelia.example.com/peers/p0.amelia.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto/peerOrganizations/amelia.example.com/peers/p0.amelia.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 9051:7051
+      - 9053:7053
+    networks:
+      - example
+
+  admin.clark.example.com:
+    container_name: admin.clark.example.com
+    extends:
+      file: admin.yaml
+      service: admin
+    environment:
+      - CORE_PEER_ADDRESS=p0.clark.example.com:7051
+      - CORE_PEER_LOCALMSPID=ClarkMSP
+    depends_on:
+      - joe.example.com
+      - p0.clark.example.com
+    volumes:
+      - ../crypto/peerOrganizations/clark.example.com/users/Admin@clark.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto/peerOrganizations/clark.example.com/users/Admin@clark.example.com/tls:/etc/hyperledger/fabric/tls
+      - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp/tlscacerts/tlsca.example.com-cert.pem:/etc/hyperledger/fabric/joe.example.com-tls-ca.pem
+    networks:
+      - example
+  
+  admin.amelia.example.com:
+    container_name: admin.amelia.example.com
+    extends:
+      file: admin.yaml
+      service: admin
+    environment:
+      - CORE_PEER_ADDRESS=p0.amelia.example.com:7051
+      - CORE_PEER_LOCALMSPID=AmeliaMSP
+    depends_on:
+      - joe.example.com
+      - p0.amelia.example.com
+    volumes:
+      - ../crypto/peerOrganizations/amelia.example.com/users/Admin@amelia.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto/peerOrganizations/amelia.example.com/users/Admin@amelia.example.com/tls:/etc/hyperledger/fabric/tls
+      - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp/tlscacerts/tlsca.example.com-cert.pem:/etc/hyperledger/fabric/joe.example.com-tls-ca.pem
+    networks:
+      - example

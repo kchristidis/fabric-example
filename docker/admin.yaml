@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  admin:
+    image: hyperledger/fabric-tools
+    environment:
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - GOPATH=/opt/gopath
+      - ORDERER_CA=/etc/hyperledger/fabric/joe.example.com-tls-ca.pem
+      - SHARED_PATH=${SHARED_PATH}
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash -c 'sleep 100000'
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../chaincode:/opt/gopath/src/github.com/kchristidis/fabric-example/chaincode
+        - ../config:${SHARED_PATH}
