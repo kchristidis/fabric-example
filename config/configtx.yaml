@@ -1,19 +1,4 @@
-# Copyright IBM Corp. All Rights Reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-
----
-################################################################################
-#
-#   Profile
-#
-#   - Different configuration profiles may be encoded here to be specified
-#   as parameters to the configtxgen tool
-#
-################################################################################
 Profiles:
-
     SystemGenesis:
         Orderer:
             <<: *OrdererDefaults
@@ -31,112 +16,36 @@ Profiles:
             Organizations:
                 - *Clark
 
-################################################################################
-#
-#   Section: Organizations
-#
-#   - This section defines the different organizational identities which will
-#   be referenced later in the configuration.
-#
-################################################################################
 Organizations:
-
-    # SampleOrg defines an MSP using the sampleconfig.  It should never be used
-    # in production but may be used as a template for other definitions
     - &Joe
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: Joe
-
-        # ID to load the MSP definition as
         ID: JoeMSP
-
-        # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: ../crypto/ordererOrganizations/example.com/msp
-
     - &Clark
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: Clark
-
-        # ID to load the MSP definition as
         ID: ClarkMSP
-
         MSPDir: ../crypto/peerOrganizations/clark.example.com/msp
-
         AnchorPeers:
-            # AnchorPeers defines the location of peers which can be used
-            # for cross org gossip communication.  Note, this value is only
-            # encoded in the genesis block in the Application section context
             - Host: p0.clark.example.com
               Port: 7051
-
     - &Amelia
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: Amelia
-
-        # ID to load the MSP definition as
         ID: AmeliaMSP
-
         MSPDir: ../crypto/peerOrganizations/amelia.example.com/msp
-
         AnchorPeers:
-            # AnchorPeers defines the location of peers which can be used
-            # for cross org gossip communication.  Note, this value is only
-            # encoded in the genesis block in the Application section context
             - Host: p0.amelia.example.com
               Port: 7051
 
-################################################################################
-#
-#   SECTION: Orderer
-#
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for orderer related parameters
-#
-################################################################################
 Orderer: &OrdererDefaults
-
-    # Orderer Type: The orderer implementation to start
-    # Available types are "solo" and "kafka"
     OrdererType: solo
-
     Addresses:
         - joe.example.com:7050
-
-    # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 1s
-
-    # Batch Size: Controls the number of messages batched into a block
     BatchSize:
-
-        # Max Message Count: The maximum number of messages to permit in a batch
         MaxMessageCount: 100
-
-        # Absolute Max Bytes: The absolute maximum number of bytes allowed for
-        # the serialized messages in a batch.
         AbsoluteMaxBytes: 10 MB
-
-        # Preferred Max Bytes: The preferred maximum number of bytes allowed for
-        # the serialized messages in a batch. A message larger than the preferred
-        # max bytes will result in a batch larger than preferred max bytes.
         PreferredMaxBytes: 512 KB
-
-    # Organizations is the list of orgs which are defined as participants on
-    # the orderer side of the network
     Organizations:
 
-################################################################################
-#
-#   SECTION: Application
-#
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for application related parameters
-#
-################################################################################
 Application: &ApplicationDefaults
-
-    # Organizations is the list of orgs which are defined as participants on
-    # the application side of the network
     Organizations:
