@@ -15,7 +15,8 @@ services:
       - ORDERER_CA=/etc/hyperledger/fabric/joe.example.com-tls-ca.pem
       - SHARED_PATH=${SHARED_PATH}
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: /bin/bash -c 'sleep 100000'
+    command: /bin/bash
+    tty: true
     volumes:
         - /var/run/:/host/var/run/
         - ../chaincode:/opt/gopath/src/github.com/kchristidis/fabric-example/chaincode
