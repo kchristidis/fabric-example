@@ -1,6 +1,7 @@
 version: '2'
 
 services:
+  
   admin:
     image: hyperledger/fabric-tools
     environment:
