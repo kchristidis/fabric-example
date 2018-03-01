@@ -32,7 +32,7 @@ ff1d2b44d88d: Already exists
 build/bin/configtxlator
 CGO_CFLAGS=" " GOBIN=/opt/gopath/src/github.com/hyperledger/fabric/build/bin go install -tags "experimental" -ldflags "-X github.com/hyperledger/fabric/common/tools/configtxlator/metadata.Version=1.1.0-beta-snapshot-8ee2bcb" github.com/hyperledger/fabric/common/tools/configtxlator
 Binary available as build/bin/configtxlator
-$ export PATH="/opt/gopath/src/github.com/hyperledger/fabric/build/bin:$PATH"
+$ export PATH="$PATH:$GOPATH/src/github.com/hyperledger/fabric/build/bin"
 $ cd $GOPATH/src/github.com/kchristidis/fabric-example/
 ```
 
