@@ -9,6 +9,7 @@ PeerOrgs:
 
   - Name: Clark
     Domain: clark.example.com
+    EnableNodeOUs: true
     Template:
       Count: 1
       Hostname: p{{.Index}}
@@ -17,6 +18,7 @@ PeerOrgs:
 
   - Name: Amelia
     Domain: amelia.example.com
+    EnableNodeOUs: true
     Template:
       Count: 1
       Hostname: p{{.Index}}
