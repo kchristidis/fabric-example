@@ -1,30 +1,33 @@
-Profiles:
-    SystemGenesis:
-        Orderer:
-            <<: *OrdererDefaults
-            Organizations:
-                - *Joe
-        Consortiums:
-            MyConsortium:
-                Organizations:
-                    - *Clark
-                    - *Amelia
-    ClarksChannel:
-        Consortium: MyConsortium
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *Clark
-
+---
 Organizations:
     - &Joe
         Name: Joe
         ID: JoeMSP
         MSPDir: ../crypto/ordererOrganizations/example.com/msp
+        Policies: &JoePolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('JoeMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('JoeMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('JoeMSP.admin')"
     - &Clark
         Name: Clark
         ID: ClarkMSP
         MSPDir: ../crypto/peerOrganizations/clark.example.com/msp
+        Policies: &ClarkPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('ClarkMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('ClarkMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('ClarkMSP.admin')"
         AnchorPeers:
             - Host: p0.clark.example.com
               Port: 7051
@@ -32,9 +35,43 @@ Organizations:
         Name: Amelia
         ID: AmeliaMSP
         MSPDir: ../crypto/peerOrganizations/amelia.example.com/msp
+        Policies: &AmeliaPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('AmeliaMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('AmeliaMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('AmeliaMSP.admin')"
         AnchorPeers:
             - Host: p0.amelia.example.com
               Port: 7051
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V1_1: true
+    Orderer: &OrdererCapabilities
+        V1_1: true
+    Application: &ApplicationCapabilities
+        V1_2: true
+
+Application: &ApplicationDefaults
+    Policies: &ApplicationDefaultPolicies
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ApplicationCapabilities
+    Organizations:
+    
 
 Orderer: &OrdererDefaults
     OrdererType: solo
@@ -45,7 +82,54 @@ Orderer: &OrdererDefaults
         MaxMessageCount: 100
         AbsoluteMaxBytes: 10 MB
         PreferredMaxBytes: 512 KB
+    Policies: &ApplicationDefaultPolicies
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *OrdererCapabilities
     Organizations:
 
-Application: &ApplicationDefaults
-    Organizations:
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+Profiles:
+    SystemGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *Joe
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            MyConsortium:
+                Organizations:
+                    - *Clark
+                    - *Amelia
+    ClarksChannel:
+        <<: *ChannelDefaults
+        Consortium: MyConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Clark
+            Capabilities:
+                <<: *ApplicationCapabilities
