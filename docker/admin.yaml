@@ -5,7 +5,7 @@ services:
   admin:
     image: hyperledger/fabric-tools
     environment:
-      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=INFO
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/client.crt
