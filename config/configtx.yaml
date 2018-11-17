@@ -74,9 +74,12 @@ Application: &ApplicationDefaults
     
 
 Orderer: &OrdererDefaults
-    OrdererType: solo
+    OrdererType: kafka
     Addresses:
         - joe.example.com:7050
+    Kafka:
+        Brokers:
+            - kafka.joe.example.com:9092
     BatchTimeout: 1s
     BatchSize:
         MaxMessageCount: 100

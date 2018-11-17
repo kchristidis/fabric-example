@@ -44,6 +44,10 @@ Bring up the Docker composition for the entire network:
 ```bash
 $ cd docker && docker-compose up -d
 Creating network "fabric_default" with the default driver
+Creating zookeeper.joe.example.com ...
+Creating zookeeper.joe.example.com ... done
+Creating kafka.joe.example.com ...
+Creating kafka.joe.example.com ... done
 Creating joe.example.com ...
 Creating joe.example.com ... done
 Creating p0.clark.example.com ...
@@ -53,7 +57,7 @@ Creating p0.clark.example.com ... done
 Creating admin.clark.example.com ...
 Creating p0.amelia.example.com ... done
 Creating admin.amelia.example.com ...
-Creating admin.clark.example.com ... done
+Creating admin.amelia.example.com ... done
 ```
 
 ```bash
