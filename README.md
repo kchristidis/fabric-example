@@ -8,7 +8,7 @@ A succinct play-by-play of some major Fabric operations.
 
 ```bash
 $ git clone git@github.com:kchristidis/fabric.git
-$ git checkout fabric-example-1.2
+$ git checkout fabric-example-1.2-kafka-reset
 $ cd devenv
 $ vagrant up
 $ vagrant ssh

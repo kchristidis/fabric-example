@@ -6,14 +6,16 @@ Organizations:
         MSPDir: ../crypto/ordererOrganizations/example.com/msp
         Policies: &JoePolicies
             Readers:
+                # We modify these policies so that we can update orderer-related
+                # configuration settings usings Clark's admin node
                 Type: Signature
-                Rule: "OR('JoeMSP.member')"
+                Rule: "OR('JoeMSP.member', 'ClarkMSP.member')"
             Writers:
                 Type: Signature
-                Rule: "OR('JoeMSP.member')"
+                Rule: "OR('JoeMSP.member', 'ClarkMSP.member')"
             Admins:
                 Type: Signature
-                Rule: "OR('JoeMSP.admin')"
+                Rule: "OR('JoeMSP.admin', 'ClarkMSP.admin')"
     - &Clark
         Name: Clark
         ID: ClarkMSP
@@ -30,23 +32,6 @@ Organizations:
                 Rule: "OR('ClarkMSP.admin')"
         AnchorPeers:
             - Host: p0.clark.example.com
-              Port: 7051
-    - &Amelia
-        Name: Amelia
-        ID: AmeliaMSP
-        MSPDir: ../crypto/peerOrganizations/amelia.example.com/msp
-        Policies: &AmeliaPolicies
-            Readers:
-                Type: Signature
-                Rule: "OR('AmeliaMSP.member')"
-            Writers:
-                Type: Signature
-                Rule: "OR('AmeliaMSP.member')"
-            Admins:
-                Type: Signature
-                Rule: "OR('AmeliaMSP.admin')"
-        AnchorPeers:
-            - Host: p0.amelia.example.com
               Port: 7051
 
 Capabilities:
@@ -79,7 +64,7 @@ Orderer: &OrdererDefaults
         - joe.example.com:7050
     Kafka:
         Brokers:
-            - kafka.joe.example.com:9092
+            - kafka-foo.joe.example.com:9092
     BatchTimeout: 1s
     BatchSize:
         MaxMessageCount: 100
@@ -114,7 +99,7 @@ Channel: &ChannelDefaults
         <<: *ChannelCapabilities
 
 Profiles:
-    SystemGenesis:
+    SystemChannel:
         <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
@@ -126,7 +111,6 @@ Profiles:
             MyConsortium:
                 Organizations:
                     - *Clark
-                    - *Amelia
     ClarksChannel:
         <<: *ChannelDefaults
         Consortium: MyConsortium

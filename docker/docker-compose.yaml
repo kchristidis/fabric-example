@@ -4,9 +4,9 @@ services:
 
   joe.example.com:
     container_name: joe.example.com
-    image: hyperledger/fabric-orderer
+    image: kchristidis/fabric-orderer-kafka-reset:1.2
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/genesis.block
@@ -16,10 +16,9 @@ services:
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - RESET=true
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
-    depends_on:
-      - kafka.joe.example.com
     volumes:
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp:/var/hyperledger/orderer/msp
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/tls/:/var/hyperledger/orderer/tls
@@ -40,21 +39,6 @@ services:
       - ../crypto/peerOrganizations/clark.example.com/peers/p0.clark.example.com/msp:/etc/hyperledger/fabric/msp
       - ../crypto/peerOrganizations/clark.example.com/peers/p0.clark.example.com/tls:/etc/hyperledger/fabric/tls
 
-  p0.amelia.example.com:
-    container_name: p0.amelia.example.com
-    extends:
-      file: peer.yaml
-      service: peer
-    environment:
-      - CORE_PEER_ADDRESS=p0.amelia.example.com:7051
-      - CORE_PEER_LOCALMSPID=AmeliaMSP
-      - CORE_PEER_ID=Amelia
-    depends_on:
-      - joe.example.com
-    volumes:
-      - ../crypto/peerOrganizations/amelia.example.com/peers/p0.amelia.example.com/msp:/etc/hyperledger/fabric/msp
-      - ../crypto/peerOrganizations/amelia.example.com/peers/p0.amelia.example.com/tls:/etc/hyperledger/fabric/tls
-
   admin.clark.example.com:
     container_name: admin.clark.example.com
     extends:
@@ -71,39 +55,40 @@ services:
       - ../crypto/peerOrganizations/clark.example.com/users/Admin@clark.example.com/tls:/etc/hyperledger/fabric/tls
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp/tlscacerts/tlsca.example.com-cert.pem:/etc/hyperledger/fabric/joe.example.com-tls-ca.pem
   
-  admin.amelia.example.com:
-    container_name: admin.amelia.example.com
-    extends:
-      file: admin.yaml
-      service: admin
-    environment:
-      - CORE_PEER_ADDRESS=p0.amelia.example.com:7051
-      - CORE_PEER_LOCALMSPID=AmeliaMSP
-    depends_on:
-      - joe.example.com
-      - p0.amelia.example.com
-    volumes:
-      - ../crypto/peerOrganizations/amelia.example.com/users/Admin@amelia.example.com/msp:/etc/hyperledger/fabric/msp
-      - ../crypto/peerOrganizations/amelia.example.com/users/Admin@amelia.example.com/tls:/etc/hyperledger/fabric/tls
-      - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp/tlscacerts/tlsca.example.com-cert.pem:/etc/hyperledger/fabric/joe.example.com-tls-ca.pem
-  
-  zookeeper.joe.example.com:
-    container_name: zookeeper.joe.example.com
+  zookeeper-foo.joe.example.com:
+    container_name: zookeeper-foo.joe.example.com
     image: hyperledger/fabric-zookeeper:latest
-    restart: always
 
-  kafka.joe.example.com:
-    container_name: kafka.joe.example.com
+  kafka-foo.joe.example.com:
+    container_name: kafka-foo.joe.example.com
     image: hyperledger/fabric-kafka:latest
-    restart: always
     environment:
       - KAFKA_BROKER_ID=1
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper.joe.example.com:2181
-      - KAFKA_MESSAGE_MAX_BYTES=52428800 # 50 MiB should enough
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-foo.joe.example.com:2181
+      - KAFKA_MESSAGE_MAX_BYTES=52428800 # 50 MiB should be enough
       - KAFKA_REPLICA_FETCH_MAX_BYTES=52428800
       - KAFKA_LISTENERS=EXTERNAL://0.0.0.0:9092,REPLICATION://0.0.0.0:9093
-      - KAFKA_ADVERTISED_LISTENERS=EXTERNAL://kafka.joe.example.com:9092,REPLICATION://kafka.joe.example.com:9093
+      - KAFKA_ADVERTISED_LISTENERS=EXTERNAL://kafka-foo.joe.example.com:9092,REPLICATION://kafka-foo.joe.example.com:9093
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=EXTERNAL:PLAINTEXT,REPLICATION:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=REPLICATION
     depends_on:
-      - zookeeper.joe.example.com
+      - zookeeper-foo.joe.example.com
+  
+  zookeeper-bar.joe.example.com:
+    container_name: zookeeper-bar.joe.example.com
+    image: hyperledger/fabric-zookeeper:latest
+
+  kafka-bar.joe.example.com:
+    container_name: kafka-bar.joe.example.com
+    image: hyperledger/fabric-kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-bar.joe.example.com:2181
+      - KAFKA_MESSAGE_MAX_BYTES=52428800
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=52428800
+      - KAFKA_LISTENERS=EXTERNAL://0.0.0.0:9092,REPLICATION://0.0.0.0:9093
+      - KAFKA_ADVERTISED_LISTENERS=EXTERNAL://kafka-bar.joe.example.com:9092,REPLICATION://kafka-bar.joe.example.com:9093
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=EXTERNAL:PLAINTEXT,REPLICATION:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=REPLICATION
+    depends_on:
+      - zookeeper-bar.joe.example.com

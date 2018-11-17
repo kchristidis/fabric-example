@@ -15,12 +15,3 @@ PeerOrgs:
       Hostname: p{{.Index}}
     Users:
       Count: 1
-
-  - Name: Amelia
-    Domain: amelia.example.com
-    EnableNodeOUs: true
-    Template:
-      Count: 1
-      Hostname: p{{.Index}}
-    Users:
-      Count: 1
