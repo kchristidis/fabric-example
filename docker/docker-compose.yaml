@@ -18,6 +18,8 @@ services:
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
+    depends_on:
+      - kafka.joe.example.com
     volumes:
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp:/var/hyperledger/orderer/msp
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/tls/:/var/hyperledger/orderer/tls
@@ -84,3 +86,24 @@ services:
       - ../crypto/peerOrganizations/amelia.example.com/users/Admin@amelia.example.com/msp:/etc/hyperledger/fabric/msp
       - ../crypto/peerOrganizations/amelia.example.com/users/Admin@amelia.example.com/tls:/etc/hyperledger/fabric/tls
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp/tlscacerts/tlsca.example.com-cert.pem:/etc/hyperledger/fabric/joe.example.com-tls-ca.pem
+  
+  zookeeper.joe.example.com:
+    container_name: zookeeper.joe.example.com
+    image: hyperledger/fabric-zookeeper:latest
+    restart: always
+
+  kafka.joe.example.com:
+    container_name: kafka.joe.example.com
+    image: hyperledger/fabric-kafka:latest
+    restart: always
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper.joe.example.com:2181
+      - KAFKA_MESSAGE_MAX_BYTES=52428800 # 50 MiB should be enough
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=52428800
+      - KAFKA_LISTENERS=EXTERNAL://0.0.0.0:9092,REPLICATION://0.0.0.0:9093
+      - KAFKA_ADVERTISED_LISTENERS=EXTERNAL://kafka.joe.example.com:9092,REPLICATION://kafka.joe.example.com:9093
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=EXTERNAL:PLAINTEXT,REPLICATION:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=REPLICATION
+    depends_on:
+      - zookeeper.joe.example.com
