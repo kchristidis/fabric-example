@@ -43,7 +43,7 @@ Bring up the Docker composition for the entire network:
 
 ```bash
 $ cd docker && docker-compose up -d
-Creating network "net_example" with the default driver
+Creating network "fabric_default" with the default driver
 Creating joe.example.com ...
 Creating joe.example.com ... done
 Creating p0.clark.example.com ...

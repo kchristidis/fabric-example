@@ -1,9 +1,5 @@
 version: '2'
 
-networks:
-
-  example:
-
 services:
 
   joe.example.com:
@@ -26,8 +22,6 @@ services:
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp:/var/hyperledger/orderer/msp
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/tls/:/var/hyperledger/orderer/tls
       - ../config/genesis.block:/var/hyperledger/orderer/genesis.block
-    networks:
-      - example
 
   p0.clark.example.com:
     container_name: p0.clark.example.com
@@ -43,8 +37,6 @@ services:
     volumes:
       - ../crypto/peerOrganizations/clark.example.com/peers/p0.clark.example.com/msp:/etc/hyperledger/fabric/msp
       - ../crypto/peerOrganizations/clark.example.com/peers/p0.clark.example.com/tls:/etc/hyperledger/fabric/tls
-    networks:
-      - example
 
   p0.amelia.example.com:
     container_name: p0.amelia.example.com
@@ -60,8 +52,6 @@ services:
     volumes:
       - ../crypto/peerOrganizations/amelia.example.com/peers/p0.amelia.example.com/msp:/etc/hyperledger/fabric/msp
       - ../crypto/peerOrganizations/amelia.example.com/peers/p0.amelia.example.com/tls:/etc/hyperledger/fabric/tls
-    networks:
-      - example
 
   admin.clark.example.com:
     container_name: admin.clark.example.com
@@ -78,8 +68,6 @@ services:
       - ../crypto/peerOrganizations/clark.example.com/users/Admin@clark.example.com/msp:/etc/hyperledger/fabric/msp
       - ../crypto/peerOrganizations/clark.example.com/users/Admin@clark.example.com/tls:/etc/hyperledger/fabric/tls
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp/tlscacerts/tlsca.example.com-cert.pem:/etc/hyperledger/fabric/joe.example.com-tls-ca.pem
-    networks:
-      - example
   
   admin.amelia.example.com:
     container_name: admin.amelia.example.com
@@ -96,5 +84,3 @@ services:
       - ../crypto/peerOrganizations/amelia.example.com/users/Admin@amelia.example.com/msp:/etc/hyperledger/fabric/msp
       - ../crypto/peerOrganizations/amelia.example.com/users/Admin@amelia.example.com/tls:/etc/hyperledger/fabric/tls
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp/tlscacerts/tlsca.example.com-cert.pem:/etc/hyperledger/fabric/joe.example.com-tls-ca.pem
-    networks:
-      - example
