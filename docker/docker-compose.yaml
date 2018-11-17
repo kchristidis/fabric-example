@@ -26,8 +26,6 @@ services:
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/msp:/var/hyperledger/orderer/msp
       - ../crypto/ordererOrganizations/example.com/orderers/joe.example.com/tls/:/var/hyperledger/orderer/tls
       - ../config/genesis.block:/var/hyperledger/orderer/genesis.block
-    ports:
-      - 7050:7050
     networks:
       - example
 
@@ -45,9 +43,6 @@ services:
     volumes:
       - ../crypto/peerOrganizations/clark.example.com/peers/p0.clark.example.com/msp:/etc/hyperledger/fabric/msp
       - ../crypto/peerOrganizations/clark.example.com/peers/p0.clark.example.com/tls:/etc/hyperledger/fabric/tls
-    ports:
-      - 8051:7051
-      - 8053:7053
     networks:
       - example
 
@@ -65,9 +60,6 @@ services:
     volumes:
       - ../crypto/peerOrganizations/amelia.example.com/peers/p0.amelia.example.com/msp:/etc/hyperledger/fabric/msp
       - ../crypto/peerOrganizations/amelia.example.com/peers/p0.amelia.example.com/tls:/etc/hyperledger/fabric/tls
-    ports:
-      - 9051:7051
-      - 9053:7053
     networks:
       - example
 
