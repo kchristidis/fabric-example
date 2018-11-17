@@ -204,7 +204,7 @@ $ peer channel signconfigtx --file config_upd.env.pb
 2018-07-28 14:06:22.880 UTC [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 ```
 
-Now send the signed envelope the ordering service:
+Now send the signed envelope to the ordering service:
 
 ```bash
 $ docker exec -ti admin.clark.example.com bash
