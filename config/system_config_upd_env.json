@@ -1,0 +1,46 @@
+{
+  "payload": {
+    "header": {
+      "channel_header": {
+        "channel_id": "systemchannel",
+        "type": 2
+      }
+    },
+    "data": {
+      "config_update": {
+        "channel_id": "systemchannel",
+        "read_set": {
+          "groups": {
+            "Orderer": {
+              "mod_policy": "",
+              "version": "0"
+            }
+          },
+          "mod_policy": "",
+          "version": "0"
+        },
+        "write_set": {
+          "groups": {
+            "Orderer": {
+              "mod_policy": "",
+              "values": {
+                "KafkaBrokers": {
+                  "mod_policy": "Admins",
+                  "value": {
+                    "brokers": [
+                      "kafka-bar.joe.example.com:9092"
+                    ]
+                  },
+                  "version": "1"
+                }
+              },
+              "version": "0"
+            }
+          },
+          "mod_policy": "",
+          "version": "0"
+        }
+      }
+    }
+  }
+}
