@@ -367,4 +367,4 @@ This the result that we expect — we had already invoked the chaincode once pre
 If you intend to use this feature, please note down the following:
 
 1. You should not write anything to the new Kafka cluster until the ordering service has been restarted.
-2. If you wish to onboard a new OSN, you will need to copy the ledger of an existing OSN to it, and the donor OSN should be fully synced up with the _previous_ Kafka cluster (`kafka-foo` in our case) _and_ also have messages appended to its ledgers that come from the _new_ Kafka cluster (`kafka-bar` in our case). This is because the new OSN (which should be onboarded with the `RESET` flag set to `false`) will use the encoded offsets in its ledgers when interacting with the backing Kafka cluster. We need to make sure that the offsets it's using are actually persisted in the current Kafka cluster.
+2. If you wish to onboard a new OSN, you will need to copy the ledger of an existing OSN to it. Additionally, the donor OSN should be aware of the new Kafka backing cluster, so that the encoded offsets in its own ledger are valid references (i.e. correspond to messages that the backing Kafka cluster has persisted).
